@@ -20,6 +20,7 @@ import { useCategories } from '@/view/categories/categories.hook';
 import { useSuppliers } from '@/view/suppliers/suppliers.hook';
 import { useWarehouses } from '@/view/warehouses/warehouses.hook';
 import { ArticleFormModal } from './article-form.modal';
+import { ArticleHistorySection } from './article-history.component';
 
 const STATUS_COLOR = {
   OK: 'success',
@@ -179,6 +180,11 @@ export function ArticleDetailScreen() {
               rowKey={(s) => s.warehouseId}
               emptyMessage="Artikl još nije na nijednom skladištu."
             />
+          </div>
+
+          <div>
+            <SectionTitle>Povijest promjena</SectionTitle>
+            <ArticleHistorySection articleId={a.id} />
           </div>
         </div>
 

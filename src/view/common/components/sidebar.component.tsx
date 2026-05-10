@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/view/common/store/auth-store';
 import { analytics } from '@/view/common/analytics';
+import { useCommandPalette } from './command-palette.component';
 import { ROLE_LABELS_HR } from '@/domain/common/role';
 import { Avatar } from './avatar.component';
 import { Kbd } from './kbd.component';
@@ -84,11 +85,12 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Search trigger (placeholder for ⌘K) */}
+      {/* Search trigger — opens command palette (⌘K) */}
       <div className="px-2.5 pt-2.5 pb-1">
         <button
           type="button"
-          className="flex items-center gap-2 px-2.5 py-1.5 w-full bg-card-hi border border-border rounded-md text-muted text-2xs hover:bg-card-hi cursor-pointer"
+          onClick={() => useCommandPalette.getState().setOpen(true)}
+          className="flex items-center gap-2 px-2.5 py-1.5 w-full bg-card-hi border border-border rounded-md text-muted text-2xs hover:text-text transition-colors cursor-pointer"
         >
           <Search size={14} />
           <span className="flex-1 text-left">Pretraži…</span>

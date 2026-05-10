@@ -11,6 +11,7 @@ import { Table } from '@/view/common/components/table.component';
 import { Pill } from '@/view/common/components/pill.component';
 import { useAuthStore } from '@/view/common/store/auth-store';
 import { fmtMoney, fmtNumber } from '@/view/common/utils/format';
+import { sparklineStub } from '@/view/common/utils/sparkline-stub';
 import {
   DashboardActivityEntry,
   DashboardWarehouseStat,
@@ -59,26 +60,47 @@ export function DashboardScreen() {
           </Card>
         ) : (
           <>
-            {/* KPI grid */}
+            {/* KPI grid — sparkline trend is a deterministic stub until
+                the daily-snapshot backend table lands (Phase W9). */}
             <div className="grid grid-cols-4 gap-4">
               <Stat
                 label="Skladišta"
                 value={fmtNumber(overview.data.counts.warehouses)}
+                trend={sparklineStub({
+                  seed: `wh-${overview.data.counts.warehouses}`,
+                  endValue: overview.data.counts.warehouses,
+                  volatility: 0.08,
+                })}
                 color="var(--accent)"
               />
               <Stat
                 label="Artikala"
                 value={fmtNumber(overview.data.counts.articles)}
+                trend={sparklineStub({
+                  seed: `art-${overview.data.counts.articles}`,
+                  endValue: overview.data.counts.articles,
+                  volatility: 0.1,
+                })}
                 color="var(--success)"
               />
               <Stat
                 label="Niska zaliha"
                 value={fmtNumber(overview.data.counts.lowStockCount)}
+                trend={sparklineStub({
+                  seed: `low-${overview.data.counts.lowStockCount}`,
+                  endValue: Math.max(1, overview.data.counts.lowStockCount),
+                  volatility: 0.25,
+                })}
                 color="var(--warning)"
               />
               <Stat
                 label="Nabave danas"
                 value={fmtNumber(overview.data.counts.todayProcurementsCount)}
+                trend={sparklineStub({
+                  seed: `proc-${overview.data.counts.todayProcurementsCount}`,
+                  endValue: Math.max(1, overview.data.counts.todayProcurementsCount),
+                  volatility: 0.3,
+                })}
                 color="var(--accent)"
               />
             </div>

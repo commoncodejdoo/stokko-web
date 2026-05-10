@@ -4,6 +4,7 @@ import {
   CreateSupplierPayload,
   UpdateSupplierPayload,
 } from '@/domain/suppliers';
+import { toast } from '@/view/common/components/toast.component';
 
 const KEY = ['suppliers'] as const;
 
@@ -26,7 +27,11 @@ export function useCreateSupplier() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateSupplierPayload) => suppliersService.create(payload),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
+    onSuccess: (s) => {
+      qc.invalidateQueries({ queryKey: KEY });
+      toast.success('Dobavljač stvoren', s.name);
+    },
+    onError: (err) => toast.error('Greška', (err as Error).message),
   });
 }
 
@@ -35,7 +40,11 @@ export function useUpdateSupplier() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: UpdateSupplierPayload }) =>
       suppliersService.update(id, payload),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
+    onSuccess: (s) => {
+      qc.invalidateQueries({ queryKey: KEY });
+      toast.success('Dobavljač spremljen', s.name);
+    },
+    onError: (err) => toast.error('Greška', (err as Error).message),
   });
 }
 
@@ -43,6 +52,10 @@ export function useDeleteSupplier() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => suppliersService.remove(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: KEY });
+      toast.success('Dobavljač obrisan');
+    },
+    onError: (err) => toast.error('Greška pri brisanju', (err as Error).message),
   });
 }

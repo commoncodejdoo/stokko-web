@@ -4,6 +4,7 @@ import {
   CreateWarehousePayload,
   UpdateWarehousePayload,
 } from '@/domain/warehouses';
+import { toast } from '@/view/common/components/toast.component';
 
 const KEY = ['warehouses'] as const;
 
@@ -34,10 +35,12 @@ export function useCreateWarehouse() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateWarehousePayload) => warehousesService.create(payload),
-    onSuccess: () => {
+    onSuccess: (w) => {
       qc.invalidateQueries({ queryKey: KEY });
       qc.invalidateQueries({ queryKey: ['dashboard'] });
+      toast.success('Skladište stvoreno', w.name);
     },
+    onError: (err) => toast.error('Greška', (err as Error).message),
   });
 }
 
@@ -46,10 +49,12 @@ export function useUpdateWarehouse() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: UpdateWarehousePayload }) =>
       warehousesService.update(id, payload),
-    onSuccess: (_, vars) => {
+    onSuccess: (w, vars) => {
       qc.invalidateQueries({ queryKey: KEY });
       qc.invalidateQueries({ queryKey: [...KEY, vars.id] });
+      toast.success('Skladište spremljeno', w.name);
     },
+    onError: (err) => toast.error('Greška', (err as Error).message),
   });
 }
 
@@ -60,6 +65,8 @@ export function useDeleteWarehouse() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: KEY });
       qc.invalidateQueries({ queryKey: ['dashboard'] });
+      toast.success('Skladište obrisano');
     },
+    onError: (err) => toast.error('Greška pri brisanju', (err as Error).message),
   });
 }

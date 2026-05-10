@@ -4,6 +4,7 @@ import {
   CreateProcurementPayload,
   ListProcurementsParams,
 } from '@/domain/procurements';
+import { toast } from '@/view/common/components/toast.component';
 
 const KEY = ['procurements'] as const;
 
@@ -26,11 +27,13 @@ export function useCreateProcurement() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateProcurementPayload) => procurementsService.create(payload),
-    onSuccess: () => {
+    onSuccess: (p) => {
       qc.invalidateQueries({ queryKey: KEY });
       qc.invalidateQueries({ queryKey: ['articles'] });
       qc.invalidateQueries({ queryKey: ['warehouses'] });
       qc.invalidateQueries({ queryKey: ['dashboard'] });
+      toast.success('Nabava evidentirana', `${p.items.length} stavki spremljeno`);
     },
+    onError: (err) => toast.error('Greška pri spremanju nabave', (err as Error).message),
   });
 }

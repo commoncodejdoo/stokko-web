@@ -10,6 +10,8 @@ import { Pill } from '@/view/common/components/pill.component';
 import { useAuthStore } from '@/view/common/store/auth-store';
 import { canEditCatalog } from '@/domain/common/role';
 import { WAREHOUSE_KIND_LABELS_HR } from '@/domain/warehouses';
+import { Sparkline } from '@/view/common/components/sparkline.component';
+import { sparklineStub } from '@/view/common/utils/sparkline-stub';
 import { useWarehouses } from './warehouses.hook';
 import { WarehouseFormModal } from './warehouse-form.modal';
 
@@ -98,8 +100,24 @@ export function WarehousesListScreen() {
                   </div>
                   <Pill color="muted">{w.initials}</Pill>
                 </div>
-                <div className="pt-3 border-t border-border text-2xs text-muted">
-                  Kliknite za detalje, artikle i statistiku.
+                <div className="pt-3 border-t border-border grid grid-cols-[1fr_auto] gap-3 items-center">
+                  <div>
+                    <div className="text-2xs text-muted mb-0.5">Promet 7d</div>
+                    <div className="text-2xs text-muted">
+                      Stub do real-time time-series (Phase W9).
+                    </div>
+                  </div>
+                  <Sparkline
+                    data={sparklineStub({
+                      seed: `wh-trend-${w.id}`,
+                      length: 7,
+                      endValue: 60,
+                      volatility: 0.25,
+                    })}
+                    color={w.color}
+                    width={100}
+                    height={28}
+                  />
                 </div>
               </Card>
             ))}

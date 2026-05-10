@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Check, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, ChevronDown, Plus, Trash2 } from 'lucide-react';
 import { PageHeader } from '@/view/common/components/page-header.component';
 import { Button } from '@/view/common/components/button.component';
 import { Card } from '@/view/common/components/card.component';
@@ -8,12 +8,19 @@ import { Field } from '@/view/common/components/field.component';
 import { Input } from '@/view/common/components/input.component';
 import { SectionTitle } from '@/view/common/components/section-title.component';
 import { Spinner } from '@/view/common/components/spinner.component';
-import { Pill } from '@/view/common/components/pill.component';
 import { Table } from '@/view/common/components/table.component';
+import {
+  PickerDialog,
+  PickerItem,
+} from '@/view/common/components/picker-dialog.component';
 import { useWarehouses } from '@/view/warehouses/warehouses.hook';
 import { useSuppliers } from '@/view/suppliers/suppliers.hook';
 import { useArticles } from '@/view/articles/articles.hook';
+import { WarehouseMiniForm } from '@/view/warehouses/warehouse-mini-form.component';
+import { SupplierMiniForm } from '@/view/suppliers/supplier-mini-form.component';
+import { ArticleMiniForm } from '@/view/articles/article-mini-form.component';
 import { useAuthStore } from '@/view/common/store/auth-store';
+import { canEditCatalog } from '@/domain/common/role';
 import { fmtMoney } from '@/view/common/utils/format';
 import { cn } from '@/view/common/utils/cn';
 import { useCreateProcurement } from './procurements.hook';
@@ -32,6 +39,8 @@ const isPositive = (s: string) => /^\d+(\.\d+)?$/.test(normalizeDecimal(s)) && N
 export function NovaPrimkaScreen() {
   const navigate = useNavigate();
   const organization = useAuthStore((s) => s.organization);
+  const role = useAuthStore((s) => s.user?.role);
+  const canAddNew = role ? canEditCatalog(role) : false;
   const currency = organization?.currency ?? 'EUR';
 
   const warehouses = useWarehouses();
@@ -41,10 +50,46 @@ export function NovaPrimkaScreen() {
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [warehouseId, setWarehouseId] = useState('');
-  const [supplierId, setSupplierId] = useState<string | ''>('');
+  const [supplierId, setSupplierId] = useState<string | null>('');
   const [note, setNote] = useState('');
   const [items, setItems] = useState<DraftItem[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  const [warehousePicker, setWarehousePicker] = useState(false);
+  const [supplierPicker, setSupplierPicker] = useState(false);
+  const [articlePickerForIdx, setArticlePickerForIdx] = useState<number | null>(null);
+
+  const selectedWarehouse = warehouses.data?.find((w) => w.id === warehouseId);
+  const selectedSupplier = supplierId ? suppliers.data?.find((s) => s.id === supplierId) : null;
+
+  const warehouseItems: PickerItem[] = useMemo(
+    () =>
+      warehouses.data?.map((w) => ({
+        id: w.id,
+        label: w.name,
+        sublabel: w.kind === 'FOH' ? 'Front-of-house' : 'Skladište',
+        color: w.color,
+      })) ?? [],
+    [warehouses.data],
+  );
+  const supplierItems: PickerItem[] = useMemo(
+    () =>
+      suppliers.data?.map((s) => ({
+        id: s.id,
+        label: s.name,
+        sublabel: s.contactPerson ?? s.email ?? undefined,
+      })) ?? [],
+    [suppliers.data],
+  );
+  const articleItems: PickerItem[] = useMemo(
+    () =>
+      articles.data?.map((a) => ({
+        id: a.id,
+        label: a.name,
+        meta: a.sku,
+      })) ?? [],
+    [articles.data],
+  );
 
   const totalValue = useMemo(
     () =>
@@ -173,32 +218,32 @@ export function NovaPrimkaScreen() {
           {step === 1 && (
             <div className="grid grid-cols-2 gap-4 max-w-[720px]">
               <Field label="Skladište">
-                <select
-                  value={warehouseId}
-                  onChange={(e) => setWarehouseId(e.target.value)}
-                  className="w-full px-3 py-2 bg-card-hi border border-border rounded-md text-text text-[13px] focus:outline-none focus:ring-1 focus:ring-accent"
+                <PickerTrigger
+                  onClick={() => setWarehousePicker(true)}
+                  placeholder="Odaberi skladište"
                 >
-                  <option value="">— Odaberi —</option>
-                  {warehouses.data?.map((w) => (
-                    <option key={w.id} value={w.id}>
-                      {w.name}
-                    </option>
-                  ))}
-                </select>
+                  {selectedWarehouse && (
+                    <>
+                      <span
+                        style={{ background: selectedWarehouse.color }}
+                        className="size-2.5 rounded-full shrink-0"
+                      />
+                      <span className="truncate">{selectedWarehouse.name}</span>
+                    </>
+                  )}
+                </PickerTrigger>
               </Field>
-              <Field label="Dobavljač (opcionalno)">
-                <select
-                  value={supplierId}
-                  onChange={(e) => setSupplierId(e.target.value)}
-                  className="w-full px-3 py-2 bg-card-hi border border-border rounded-md text-text text-[13px] focus:outline-none focus:ring-1 focus:ring-accent"
+              <Field label="Dobavljač">
+                <PickerTrigger
+                  onClick={() => setSupplierPicker(true)}
+                  placeholder="Bez dobavljača"
                 >
-                  <option value="">— Bez dobavljača —</option>
-                  {suppliers.data?.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
-                </select>
+                  {selectedSupplier ? (
+                    <span className="truncate">{selectedSupplier.name}</span>
+                  ) : supplierId === null ? (
+                    <span className="italic text-muted">Bez dobavljača</span>
+                  ) : null}
+                </PickerTrigger>
               </Field>
               <Field label="Napomena" cols={2}>
                 <Input
@@ -234,20 +279,33 @@ export function NovaPrimkaScreen() {
                     {
                       key: 'article',
                       label: 'Artikl',
-                      render: (_, idx) => (
-                        <select
-                          value={items[idx].articleId}
-                          onChange={(e) => updateItem(idx, { articleId: e.target.value })}
-                          className="w-full px-2 py-1 bg-card-hi border border-border rounded-sm text-text text-2xs focus:outline-none focus:ring-1 focus:ring-accent"
-                        >
-                          <option value="">— Odaberi artikl —</option>
-                          {articles.data?.map((a) => (
-                            <option key={a.id} value={a.id}>
-                              {a.name} ({a.sku})
-                            </option>
-                          ))}
-                        </select>
-                      ),
+                      render: (_, idx) => {
+                        const article = articles.data?.find(
+                          (a) => a.id === items[idx].articleId,
+                        );
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => setArticlePickerForIdx(idx)}
+                            className={cn(
+                              'w-full text-left px-2 py-1 bg-card-hi border border-border rounded-sm text-2xs flex items-center gap-2 hover:border-accent transition-colors',
+                              article ? 'text-text' : 'text-muted',
+                            )}
+                          >
+                            {article ? (
+                              <>
+                                <span className="font-mono text-2xs text-muted shrink-0">
+                                  {article.sku}
+                                </span>
+                                <span className="truncate">{article.name}</span>
+                              </>
+                            ) : (
+                              <span>— Odaberi artikl —</span>
+                            )}
+                            <ChevronDown size={12} className="ml-auto text-muted shrink-0" />
+                          </button>
+                        );
+                      },
                     },
                     {
                       key: 'qty',
@@ -334,21 +392,22 @@ export function NovaPrimkaScreen() {
               </div>
               <h3 className="m-0 mb-2 text-[18px] font-semibold">Spremno za evidentiranje</h3>
               <p className="m-0 text-2xs text-muted">
-                {items.length} stavki · <span className="text-text font-medium">{fmtMoney(totalValue, currency)}</span>
+                {items.length} stavki ·{' '}
+                <span className="text-text font-medium">{fmtMoney(totalValue, currency)}</span>
               </p>
               <div className="mt-6 inline-flex flex-col gap-2 text-left text-[13px]">
                 <div className="flex justify-between gap-6">
                   <span className="text-muted">Skladište:</span>
-                  <span className="font-medium">
-                    {warehouses.data?.find((w) => w.id === warehouseId)?.name ?? '—'}
-                  </span>
+                  <span className="font-medium">{selectedWarehouse?.name ?? '—'}</span>
                 </div>
                 <div className="flex justify-between gap-6">
                   <span className="text-muted">Dobavljač:</span>
                   <span className="font-medium">
-                    {supplierId
-                      ? suppliers.data?.find((s) => s.id === supplierId)?.name ?? '—'
-                      : <span className="italic text-muted">Bez dobavljača</span>}
+                    {selectedSupplier ? (
+                      selectedSupplier.name
+                    ) : (
+                      <span className="italic text-muted">Bez dobavljača</span>
+                    )}
                   </span>
                 </div>
                 {note && (
@@ -404,9 +463,111 @@ export function NovaPrimkaScreen() {
           )}
         </div>
       </div>
+
+      {/* Pickers */}
+      <PickerDialog
+        open={warehousePicker}
+        onOpenChange={setWarehousePicker}
+        title="Odaberi skladište"
+        items={warehouseItems}
+        selectedId={warehouseId}
+        onSelect={(item) => setWarehouseId(item.id)}
+        searchPlaceholder="Pretraži skladišta…"
+        addNewLabel="Dodaj novo skladište"
+        canAddNew={canAddNew}
+        renderCreateForm={(close) => (
+          <WarehouseMiniForm
+            onSaved={(w) => {
+              setWarehouseId(w.id);
+              setWarehousePicker(false);
+              close();
+            }}
+            onCancel={close}
+          />
+        )}
+      />
+
+      <PickerDialog
+        open={supplierPicker}
+        onOpenChange={setSupplierPicker}
+        title="Odaberi dobavljača"
+        items={supplierItems}
+        selectedId={supplierId}
+        onSelect={(item) => setSupplierId(item.id)}
+        searchPlaceholder="Pretraži dobavljače…"
+        nullOptionLabel="Bez dobavljača"
+        onSelectNull={() => setSupplierId(null)}
+        addNewLabel="Dodaj novog dobavljača"
+        canAddNew={canAddNew}
+        renderCreateForm={(close) => (
+          <SupplierMiniForm
+            onSaved={(s) => {
+              setSupplierId(s.id);
+              setSupplierPicker(false);
+              close();
+            }}
+            onCancel={close}
+          />
+        )}
+      />
+
+      <PickerDialog
+        open={articlePickerForIdx !== null}
+        onOpenChange={(open) => !open && setArticlePickerForIdx(null)}
+        title="Odaberi artikl"
+        items={articleItems}
+        selectedId={
+          articlePickerForIdx !== null ? items[articlePickerForIdx]?.articleId : undefined
+        }
+        onSelect={(item) => {
+          if (articlePickerForIdx !== null) {
+            const article = articles.data?.find((a) => a.id === item.id);
+            updateItem(articlePickerForIdx, {
+              articleId: item.id,
+              purchasePrice: article?.purchasePrice ?? '0.00',
+            });
+          }
+        }}
+        searchPlaceholder="Pretraži po nazivu ili SKU…"
+        addNewLabel="Dodaj novi artikl"
+        canAddNew={canAddNew}
+        renderCreateForm={(close) => (
+          <ArticleMiniForm
+            onSaved={(a) => {
+              if (articlePickerForIdx !== null) {
+                updateItem(articlePickerForIdx, {
+                  articleId: a.id,
+                  purchasePrice: a.purchasePrice,
+                });
+              }
+              setArticlePickerForIdx(null);
+              close();
+            }}
+            onCancel={close}
+          />
+        )}
+      />
     </div>
   );
 }
 
-// Suppress unused import warning during the wizard render.
-void Pill;
+function PickerTrigger({
+  onClick,
+  placeholder,
+  children,
+}: {
+  onClick(): void;
+  placeholder: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full flex items-center gap-2 px-3 py-2 bg-card-hi border border-border rounded-md text-text text-[13px] hover:border-accent transition-colors min-h-[36px]"
+    >
+      {children ?? <span className="text-muted">{placeholder}</span>}
+      <ChevronDown size={14} className="ml-auto text-muted shrink-0" />
+    </button>
+  );
+}
