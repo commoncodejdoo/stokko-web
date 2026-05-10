@@ -9,6 +9,10 @@ interface PersistedSlice {
   refreshToken: string | null;
   userJson: SerializedUser | null;
   organization: Organization | null;
+  /** A3 — set when this session was opened via platform-admin impersonation. */
+  readOnly: boolean;
+  impersonatedBy: string | null;
+  readOnlyExpiresAt: number | null;
 }
 
 interface AuthState extends PersistedSlice {
@@ -22,6 +26,14 @@ interface AuthActions {
     refreshToken: string;
     user: User;
     organization: Organization;
+  }): void;
+  /** A3 — establish a read-only impersonation session from a short-lived JWT. */
+  setImpersonationSession(payload: {
+    accessToken: string;
+    user: User;
+    organization: Organization;
+    impersonatedBy: string | null;
+    expiresAt: number;
   }): void;
   /** Used by the HTTP refresh interceptor — updates tokens without touching user/org. */
   updateTokens(accessToken: string, refreshToken: string): void;
@@ -75,6 +87,9 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       userJson: null,
       user: null,
       organization: null,
+      readOnly: false,
+      impersonatedBy: null,
+      readOnlyExpiresAt: null,
 
       setSession({ accessToken, refreshToken, user, organization }) {
         set({
@@ -84,6 +99,23 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           user,
           organization,
           status: 'authenticated',
+          readOnly: false,
+          impersonatedBy: null,
+          readOnlyExpiresAt: null,
+        });
+      },
+
+      setImpersonationSession({ accessToken, user, organization, impersonatedBy, expiresAt }) {
+        set({
+          accessToken,
+          refreshToken: null,
+          userJson: userToJson(user),
+          user,
+          organization,
+          status: 'authenticated',
+          readOnly: true,
+          impersonatedBy,
+          readOnlyExpiresAt: expiresAt,
         });
       },
 
@@ -107,6 +139,9 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           user: null,
           userJson: null,
           organization: null,
+          readOnly: false,
+          impersonatedBy: null,
+          readOnlyExpiresAt: null,
         });
       },
 
@@ -124,6 +159,9 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           user: null,
           userJson: null,
           organization: null,
+          readOnly: false,
+          impersonatedBy: null,
+          readOnlyExpiresAt: null,
         });
       },
     }),
@@ -135,6 +173,9 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         refreshToken: state.refreshToken,
         userJson: state.userJson,
         organization: state.organization,
+        readOnly: state.readOnly,
+        impersonatedBy: state.impersonatedBy,
+        readOnlyExpiresAt: state.readOnlyExpiresAt,
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;

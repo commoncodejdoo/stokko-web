@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './sidebar.component';
 import { Topbar } from './topbar.component';
+import { ReadOnlyBanner } from './read-only-banner.component';
 import {
   CommandPalette,
   useCommandPaletteShortcut,
@@ -12,6 +13,7 @@ export function AppShell() {
     <div className="flex h-screen w-full bg-bg text-text overflow-hidden">
       <Sidebar />
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <ReadOnlyBanner />
         <Topbar />
         <div className="flex-1 overflow-auto">
           <Outlet />

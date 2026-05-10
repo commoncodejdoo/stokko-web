@@ -4,6 +4,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 import { useAuthStore } from '@/view/common/store/auth-store';
+import { toast } from '@/view/common/components/toast.component';
 
 declare module 'axios' {
   interface AxiosRequestConfig {
@@ -27,11 +28,26 @@ export const httpClient: AxiosInstance = axios.create({
   },
 });
 
+class ReadOnlySessionAbort extends Error {
+  readonly code = 'READ_ONLY_SESSION';
+  constructor() {
+    super('Read-only impersonation session — mutations blocked client-side.');
+  }
+}
+
 httpClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const { accessToken } = useAuthStore.getState();
+    const { accessToken, readOnly } = useAuthStore.getState();
     if (accessToken) {
       config.headers.set('Authorization', `Bearer ${accessToken}`);
+    }
+    // A3 — short-circuit write requests on a read-only impersonation
+    // session. The backend `ReadOnlySessionInterceptor` enforces the same
+    // rule server-side; this gives instant client feedback.
+    const method = (config.method ?? 'get').toLowerCase();
+    if (readOnly && method !== 'get' && !config._isRefreshCall) {
+      toast.error('Read-only sesija', 'Izmjene su onemogućene tijekom admin pregleda.');
+      throw new ReadOnlySessionAbort();
     }
     return config;
   },

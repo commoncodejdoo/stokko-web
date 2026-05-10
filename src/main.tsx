@@ -6,11 +6,13 @@ import { ThemeProvider } from '@/view/common/theme/theme-provider.component';
 import { ToastViewport } from '@/view/common/components/toast.component';
 import { setupAnalytics } from '@/view/common/analytics';
 import { setupObservability } from '@/view/common/observability';
+import { bootImpersonationFromHash } from '@/view/auth/impersonation-boot.hook';
 import './index.css';
 import { router } from './view/router';
 
 setupAnalytics();
 setupObservability();
+bootImpersonationFromHash();
 
 const queryClient = new QueryClient({
   defaultOptions: {
