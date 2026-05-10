@@ -12,6 +12,9 @@ import {
   Building2,
   LucideIcon,
   LogOut,
+  ArrowLeftRight,
+  Calendar,
+  BarChart3,
 } from 'lucide-react';
 import { useAuthStore } from '@/view/common/store/auth-store';
 import { analytics } from '@/view/common/analytics';
@@ -47,7 +50,15 @@ const GROUPS: NavGroup[] = [
   },
   {
     label: 'Operacije',
-    entries: [{ to: '/korekcija', label: 'Korekcija zaliha', icon: Edit3 }],
+    entries: [
+      { to: '/premjestaj', label: 'Premještaj robe', icon: ArrowLeftRight },
+      { to: '/korekcija', label: 'Korekcija zaliha', icon: Edit3 },
+      { to: '/smjena', label: 'Obračun smjene', icon: Calendar },
+    ],
+  },
+  {
+    label: 'Uvidi',
+    entries: [{ to: '/analitika', label: 'Analitika prodaje', icon: BarChart3 }],
   },
   {
     label: 'Tim',

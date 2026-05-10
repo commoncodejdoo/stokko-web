@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Building2, Edit, Trash2 } from 'lucide-react';
 import { PageHeader } from '@/view/common/components/page-header.component';
 import { Button } from '@/view/common/components/button.component';
@@ -14,6 +15,7 @@ import { useSuppliers, useDeleteSupplier } from './suppliers.hook';
 import { SupplierFormModal } from './supplier-form.modal';
 
 export function SuppliersListScreen() {
+  const navigate = useNavigate();
   const role = useAuthStore((s) => s.user?.role);
   const canEdit = role ? canEditCatalog(role) : false;
   const canDelete = role ? canManageUsers(role) : false;
@@ -144,6 +146,7 @@ export function SuppliersListScreen() {
             ]}
             rows={suppliers.data}
             rowKey={(s) => s.id}
+            onRowClick={(s) => navigate(`/dobavljaci/${s.id}`)}
           />
         )}
       </div>

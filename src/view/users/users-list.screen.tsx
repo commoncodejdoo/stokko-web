@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Users, RotateCw, UserX, UserCheck, Copy, Check } from 'lucide-react';
 import { PageHeader } from '@/view/common/components/page-header.component';
 import { Button } from '@/view/common/components/button.component';
@@ -27,6 +28,7 @@ const ROLE_PILL_COLOR = {
 } as const;
 
 export function UsersListScreen() {
+  const navigate = useNavigate();
   const currentUserId = useAuthStore((s) => s.user?.id);
   const role = useAuthStore((s) => s.user?.role);
   const canManage = role ? canManageUsers(role) : false;
@@ -181,7 +183,10 @@ export function UsersListScreen() {
                     <div className="inline-flex gap-1 justify-end">
                       <button
                         type="button"
-                        onClick={() => handleReset(u)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleReset(u);
+                        }}
                         className="p-1.5 text-muted hover:text-text rounded-md"
                         aria-label="Resetiraj lozinku"
                         title="Resetiraj lozinku"
@@ -190,7 +195,10 @@ export function UsersListScreen() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => handleToggleActive(u)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleActive(u);
+                        }}
                         className="p-1.5 text-muted hover:text-text rounded-md"
                         aria-label={u.isActive ? 'Deaktiviraj' : 'Aktiviraj'}
                         title={u.isActive ? 'Deaktiviraj' : 'Aktiviraj'}
@@ -203,6 +211,7 @@ export function UsersListScreen() {
             ]}
             rows={users.data}
             rowKey={(u) => u.id}
+            onRowClick={(u) => navigate(`/korisnici/${u.id}`)}
           />
         )}
       </div>

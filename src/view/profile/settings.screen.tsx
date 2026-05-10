@@ -1,23 +1,30 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { PlayCircle } from 'lucide-react';
 import { PageHeader } from '@/view/common/components/page-header.component';
 import { Card } from '@/view/common/components/card.component';
 import { SectionTitle } from '@/view/common/components/section-title.component';
 import { Field } from '@/view/common/components/field.component';
 import { Input } from '@/view/common/components/input.component';
-import { Spinner } from '@/view/common/components/spinner.component';
+import { Button } from '@/view/common/components/button.component';
 import { Pill } from '@/view/common/components/pill.component';
 import { useAuthStore } from '@/view/common/store/auth-store';
-import { useCategories } from '@/view/categories/categories.hook';
 import { useTheme } from '@/view/common/theme/use-theme.hook';
+import { useChangePassword } from '@/view/auth/change-password.hook';
 import { ROLE_LABELS_HR } from '@/domain/common/role';
 import { cn } from '@/view/common/utils/cn';
+import { CategoriesPanel } from '@/view/categories/categories-panel.component';
 
-type Tab = 'profil' | 'radni-prostor' | 'kategorije' | 'izgled';
+type Tab = 'profil' | 'radni-prostor' | 'kategorije' | 'sigurnost' | 'izgled';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'profil', label: 'Profil' },
   { id: 'radni-prostor', label: 'Radni prostor' },
   { id: 'kategorije', label: 'Kategorije' },
+  { id: 'sigurnost', label: 'Sigurnost' },
   { id: 'izgled', label: 'Izgled' },
 ];
 
@@ -95,6 +102,8 @@ export function SettingsScreen() {
 
           {tab === 'kategorije' && <CategoriesPanel />}
 
+          {tab === 'sigurnost' && <SecurityPanel />}
+
           {tab === 'izgled' && <AppearancePanel />}
         </div>
       </div>
@@ -102,61 +111,136 @@ export function SettingsScreen() {
   );
 }
 
-function CategoriesPanel() {
-  const categories = useCategories();
+const passwordSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Unesi trenutnu lozinku.'),
+    newPassword: z.string().min(8, 'Nova lozinka mora imati barem 8 znakova.'),
+    confirm: z.string().min(8, 'Potvrda mora imati barem 8 znakova.'),
+  })
+  .refine((d) => d.newPassword === d.confirm, {
+    path: ['confirm'],
+    message: 'Lozinke se ne podudaraju.',
+  })
+  .refine((d) => d.currentPassword !== d.newPassword, {
+    path: ['newPassword'],
+    message: 'Nova lozinka mora biti različita od trenutne.',
+  });
+
+type PasswordValues = z.infer<typeof passwordSchema>;
+
+function SecurityPanel() {
+  const change = useChangePassword();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<PasswordValues>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: { currentPassword: '', newPassword: '', confirm: '' },
+  });
+
+  const onSubmit = async (values: PasswordValues) => {
+    try {
+      await change.mutateAsync({
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword,
+      });
+      reset();
+    } catch {
+      // toast in hook
+    }
+  };
+
   return (
     <Card padding="lg">
-      <SectionTitle>Kategorije</SectionTitle>
-      {categories.isPending ? (
-        <div className="flex items-center justify-center py-10">
-          <Spinner />
+      <SectionTitle>Promijeni lozinku</SectionTitle>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4 mt-2">
+        <Field label="Trenutna lozinka" error={errors.currentPassword?.message} cols={2}>
+          <Input
+            type="password"
+            autoComplete="current-password"
+            invalid={Boolean(errors.currentPassword)}
+            {...register('currentPassword')}
+          />
+        </Field>
+        <Field label="Nova lozinka" error={errors.newPassword?.message}>
+          <Input
+            type="password"
+            autoComplete="new-password"
+            invalid={Boolean(errors.newPassword)}
+            {...register('newPassword')}
+          />
+        </Field>
+        <Field label="Potvrda nove lozinke" error={errors.confirm?.message}>
+          <Input
+            type="password"
+            autoComplete="new-password"
+            invalid={Boolean(errors.confirm)}
+            {...register('confirm')}
+          />
+        </Field>
+        <div className="col-span-2 flex justify-end pt-2">
+          <Button
+            type="submit"
+            variant="primary"
+            loading={isSubmitting || change.isPending}
+          >
+            Spremi novu lozinku
+          </Button>
         </div>
-      ) : (
-        <div className="flex flex-wrap gap-2">
-          {categories.data?.map((c) => (
-            <Pill key={c.id} color={c.isPredefined ? 'muted' : 'accent'}>
-              {c.name}
-            </Pill>
-          ))}
-        </div>
-      )}
+      </form>
       <p className="text-2xs text-muted mt-4 m-0">
-        Kategorije se trenutno mogu samo pregledavati. CRUD interakcija dolazi u sljedećoj fazi.
+        Lozinka mora imati barem 8 znakova. Po promjeni se trenutna sesija zadržava — pri
+        sljedećoj prijavi koristit ćete novu lozinku.
       </p>
     </Card>
   );
 }
 
 function AppearancePanel() {
+  const navigate = useNavigate();
   const { preference, setPreference, isDark } = useTheme();
   return (
-    <Card padding="lg">
-      <SectionTitle>Izgled</SectionTitle>
-      <div className="flex flex-col gap-3">
-        <Field label="Tema">
-          <div className="flex gap-2">
-            {(['system', 'light', 'dark'] as const).map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setPreference(p)}
-                className={cn(
-                  'px-3 py-1.5 text-[13px] rounded-md border transition-colors',
-                  preference === p
-                    ? 'bg-accent-soft text-accent border-accent/30'
-                    : 'bg-card-hi text-text border-border',
-                )}
-              >
-                {p === 'system' ? 'Sustavno' : p === 'light' ? 'Svijetla' : 'Tamna'}
-              </button>
-            ))}
-          </div>
-        </Field>
-        <p className="text-2xs text-muted m-0">
-          Trenutno aktivna: <span className="text-text font-medium">{isDark ? 'Tamna' : 'Svijetla'}</span>.
-          Postavka se sprema u localStorage radnog uređaja.
-        </p>
-      </div>
-    </Card>
+    <>
+      <Card padding="lg">
+        <SectionTitle>Izgled</SectionTitle>
+        <div className="flex flex-col gap-3">
+          <Field label="Tema">
+            <div className="flex gap-2">
+              {(['system', 'light', 'dark'] as const).map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setPreference(p)}
+                  className={cn(
+                    'px-3 py-1.5 text-[13px] rounded-md border transition-colors',
+                    preference === p
+                      ? 'bg-accent-soft text-accent border-accent/30'
+                      : 'bg-card-hi text-text border-border',
+                  )}
+                >
+                  {p === 'system' ? 'Sustavno' : p === 'light' ? 'Svijetla' : 'Tamna'}
+                </button>
+              ))}
+            </div>
+          </Field>
+          <p className="text-2xs text-muted m-0">
+            Trenutno aktivna:{' '}
+            <span className="text-text font-medium">{isDark ? 'Tamna' : 'Svijetla'}</span>.
+            Postavka se sprema u localStorage.
+          </p>
+        </div>
+      </Card>
+      <Card padding="lg">
+        <SectionTitle>Onboarding</SectionTitle>
+        <Button
+          icon={<PlayCircle size={14} />}
+          onClick={() => navigate('/onboarding?replay=1')}
+        >
+          Pogledaj uvod ponovo
+        </Button>
+      </Card>
+    </>
   );
 }
