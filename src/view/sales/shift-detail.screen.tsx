@@ -56,7 +56,7 @@ export function ShiftDetailScreen() {
   const handleDelete = async () => {
     try {
       await deleteShift.mutateAsync(s.id);
-      navigate('/smjena', { replace: true });
+      navigate('/shifts', { replace: true });
     } catch {
       // toast
     }
@@ -91,7 +91,7 @@ export function ShiftDetailScreen() {
         }
         breadcrumb={
           <>
-            <Link to="/smjena" className="hover:text-text">
+            <Link to="/shifts" className="hover:text-text">
               Smjene
             </Link>{' '}
             / {new Date(s.date).toLocaleDateString('hr-HR')}

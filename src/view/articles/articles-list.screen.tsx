@@ -223,7 +223,7 @@ export function ArticlesListScreen() {
             ]}
             rows={articles.data}
             rowKey={(a) => a.id}
-            onRowClick={(a) => navigate(`/artikli/${a.id}`)}
+            onRowClick={(a) => navigate(`/articles/${a.id}`)}
           />
         )}
       </div>

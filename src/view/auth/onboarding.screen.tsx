@@ -48,7 +48,7 @@ export function OnboardingScreen() {
 
   const finish = () => {
     if (!isReplay) markSeen();
-    navigate(isReplay ? '/postavke' : '/login', { replace: true });
+    navigate(isReplay ? '/settings' : '/login', { replace: true });
   };
 
   return (

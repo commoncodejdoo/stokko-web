@@ -146,7 +146,7 @@ export function SuppliersListScreen() {
             ]}
             rows={suppliers.data}
             rowKey={(s) => s.id}
-            onRowClick={(s) => navigate(`/dobavljaci/${s.id}`)}
+            onRowClick={(s) => navigate(`/suppliers/${s.id}`)}
           />
         )}
       </div>

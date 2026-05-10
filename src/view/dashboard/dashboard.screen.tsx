@@ -39,7 +39,7 @@ export function DashboardScreen() {
             <Button
               variant="primary"
               icon={<Plus size={14} />}
-              onClick={() => navigate('/primke')}
+              onClick={() => navigate('/procurements')}
             >
               Nova nabava
             </Button>

@@ -100,14 +100,14 @@ export function CommandPalette() {
                 <CmdItem
                   value="nova nabava primka"
                   icon={<Plus size={14} />}
-                  onSelect={() => go('/primke/nova')}
+                  onSelect={() => go('/procurements/new')}
                 >
                   Nova nabava
                 </CmdItem>
                 <CmdItem
                   value="korekcija zalihe stanje"
                   icon={<Edit3 size={14} />}
-                  onSelect={() => go('/korekcija')}
+                  onSelect={() => go('/corrections')}
                 >
                   Korekcija zaliha
                 </CmdItem>
@@ -120,38 +120,38 @@ export function CommandPalette() {
                 <CmdItem
                   value="skladista warehouses"
                   icon={<WarehouseIcon size={14} />}
-                  onSelect={() => go('/skladista')}
+                  onSelect={() => go('/warehouses')}
                 >
                   Skladišta
                 </CmdItem>
-                <CmdItem value="artikli items" icon={<Package size={14} />} onSelect={() => go('/artikli')}>
+                <CmdItem value="artikli items" icon={<Package size={14} />} onSelect={() => go('/articles')}>
                   Artikli
                 </CmdItem>
                 <CmdItem
                   value="dobavljaci suppliers"
                   icon={<Building2 size={14} />}
-                  onSelect={() => go('/dobavljaci')}
+                  onSelect={() => go('/suppliers')}
                 >
                   Dobavljači
                 </CmdItem>
                 <CmdItem
                   value="primke nabave procurements"
                   icon={<Truck size={14} />}
-                  onSelect={() => go('/primke')}
+                  onSelect={() => go('/procurements')}
                 >
                   Nabave
                 </CmdItem>
                 <CmdItem
                   value="korisnici users team"
                   icon={<UsersIcon size={14} />}
-                  onSelect={() => go('/korisnici')}
+                  onSelect={() => go('/users')}
                 >
                   Korisnici
                 </CmdItem>
                 <CmdItem
                   value="postavke settings"
                   icon={<SettingsIcon size={14} />}
-                  onSelect={() => go('/postavke')}
+                  onSelect={() => go('/settings')}
                 >
                   Postavke
                 </CmdItem>
@@ -164,7 +164,7 @@ export function CommandPalette() {
                       key={a.id}
                       value={`${a.name} ${a.sku}`}
                       icon={<Package size={14} />}
-                      onSelect={() => go(`/artikli/${a.id}`)}
+                      onSelect={() => go(`/articles/${a.id}`)}
                       meta={a.sku}
                     >
                       {a.name}
@@ -185,7 +185,7 @@ export function CommandPalette() {
                           className="size-3 rounded-sm shrink-0"
                         />
                       }
-                      onSelect={() => go(`/skladista/${w.id}`)}
+                      onSelect={() => go(`/warehouses/${w.id}`)}
                     >
                       {w.name}
                     </CmdItem>
@@ -200,7 +200,7 @@ export function CommandPalette() {
                       key={s.id}
                       value={s.name}
                       icon={<Building2 size={14} />}
-                      onSelect={() => go(`/dobavljaci`)}
+                      onSelect={() => go(`/suppliers`)}
                     >
                       {s.name}
                     </CmdItem>
@@ -215,7 +215,7 @@ export function CommandPalette() {
                       key={p.id}
                       value={`${p.id} nabava ${new Date(p.createdAt).toLocaleDateString('hr-HR')}`}
                       icon={<Truck size={14} />}
-                      onSelect={() => go(`/primke/${p.id}`)}
+                      onSelect={() => go(`/procurements/${p.id}`)}
                       meta={new Date(p.createdAt).toLocaleDateString('hr-HR')}
                     >
                       <span className="font-mono text-2xs">

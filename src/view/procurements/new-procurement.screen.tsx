@@ -31,12 +31,13 @@ interface DraftItem {
   purchasePrice: string;
 }
 
+// UI labels remain in Croatian per project rules (see CLAUDE.md "Working agreements").
 const STEPS = ['Skladište & dobavljač', 'Artikli', 'Potvrda'];
 
 const normalizeDecimal = (s: string) => s.replace(',', '.').trim();
 const isPositive = (s: string) => /^\d+(\.\d+)?$/.test(normalizeDecimal(s)) && Number(s) > 0;
 
-export function NovaPrimkaScreen() {
+export function NewProcurementScreen() {
   const navigate = useNavigate();
   const organization = useAuthStore((s) => s.organization);
   const role = useAuthStore((s) => s.user?.role);
@@ -134,7 +135,7 @@ export function NovaPrimkaScreen() {
         })),
       };
       const result = await createProcurement.mutateAsync(payload);
-      navigate(`/primke/${result.id}`, { replace: true });
+      navigate(`/procurements/${result.id}`, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Greška pri spremanju nabave.');
     }
@@ -155,7 +156,7 @@ export function NovaPrimkaScreen() {
         breadcrumb={
           <>
             <a
-              onClick={() => navigate('/primke')}
+              onClick={() => navigate('/procurements')}
               className="hover:text-text cursor-pointer"
             >
               Nabave
@@ -164,7 +165,7 @@ export function NovaPrimkaScreen() {
           </>
         }
         actions={
-          <Button onClick={() => navigate('/primke')} disabled={createProcurement.isPending}>
+          <Button onClick={() => navigate('/procurements')} disabled={createProcurement.isPending}>
             Odustani
           </Button>
         }

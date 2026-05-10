@@ -84,7 +84,7 @@ export function ProcurementsListScreen() {
           <Button
             variant="primary"
             icon={<Plus size={14} />}
-            onClick={() => navigate('/primke/nova')}
+            onClick={() => navigate('/procurements/new')}
           >
             Nova nabava
           </Button>
@@ -146,7 +146,7 @@ export function ProcurementsListScreen() {
               <Button
                 variant="primary"
                 icon={<Plus size={14} />}
-                onClick={() => navigate('/primke/nova')}
+                onClick={() => navigate('/procurements/new')}
               >
                 Nova nabava
               </Button>
@@ -211,7 +211,7 @@ export function ProcurementsListScreen() {
             ]}
             rows={items}
             rowKey={(p) => p.id}
-            onRowClick={(p) => navigate(`/primke/${p.id}`)}
+            onRowClick={(p) => navigate(`/procurements/${p.id}`)}
           />
         )}
       </div>

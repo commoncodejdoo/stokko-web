@@ -54,7 +54,7 @@ export function SupplierDetailScreen() {
   const handleDelete = async () => {
     try {
       await deleteSupplier.mutateAsync(s.id);
-      navigate('/dobavljaci', { replace: true });
+      navigate('/suppliers', { replace: true });
     } catch {
       // toast
     }
@@ -72,7 +72,7 @@ export function SupplierDetailScreen() {
         }
         breadcrumb={
           <>
-            <Link to="/dobavljaci" className="hover:text-text">
+            <Link to="/suppliers" className="hover:text-text">
               Dobavljači
             </Link>{' '}
             / {s.name}
@@ -150,7 +150,7 @@ export function SupplierDetailScreen() {
               ]}
               rows={articles.data}
               rowKey={(a) => a.id}
-              onRowClick={(a) => navigate(`/artikli/${a.id}`)}
+              onRowClick={(a) => navigate(`/articles/${a.id}`)}
             />
           ) : (
             <Card padding="lg">

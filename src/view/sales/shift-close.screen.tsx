@@ -118,7 +118,7 @@ export function ShiftCloseScreen() {
     }
     try {
       const { shift } = await closeShift.mutateAsync({ items });
-      navigate(`/smjena/${shift.id}`, { replace: true });
+      navigate(`/shifts/${shift.id}`, { replace: true });
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Greška pri zatvaranju smjene.');
     }
@@ -145,7 +145,7 @@ export function ShiftCloseScreen() {
             title="Nema FOH skladišta."
             description="Obračun smjene radi samo na skladištima tipa FOH (front-of-house, npr. Sala, Bar). Otvori postavke skladišta i promijeni tip ako trebaš."
             action={
-              <Button onClick={() => navigate('/skladista')}>Upravljaj skladištima</Button>
+              <Button onClick={() => navigate('/warehouses')}>Upravljaj skladištima</Button>
             }
           />
         </div>

@@ -27,7 +27,7 @@ export function TransfersListScreen() {
           <Button
             variant="primary"
             icon={<Plus size={14} />}
-            onClick={() => navigate('/premjestaj/novi')}
+            onClick={() => navigate('/transfers/new')}
           >
             Novi premještaj
           </Button>
@@ -51,7 +51,7 @@ export function TransfersListScreen() {
               <Button
                 variant="primary"
                 icon={<Plus size={14} />}
-                onClick={() => navigate('/premjestaj/novi')}
+                onClick={() => navigate('/transfers/new')}
               >
                 Novi premještaj
               </Button>
@@ -114,7 +114,7 @@ export function TransfersListScreen() {
             ]}
             rows={transfers.data.items}
             rowKey={(t) => t.id}
-            onRowClick={(t) => navigate(`/premjestaj/${t.id}`)}
+            onRowClick={(t) => navigate(`/transfers/${t.id}`)}
           />
         )}
       </div>

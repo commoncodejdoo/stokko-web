@@ -63,7 +63,7 @@ export function CorrectionScreen() {
         reason,
         note: note.trim() || undefined,
       });
-      navigate(`/artikli/${articleId}`, { replace: true });
+      navigate(`/articles/${articleId}`, { replace: true });
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Greška pri spremanju korekcije.');
     }

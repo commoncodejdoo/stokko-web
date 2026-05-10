@@ -42,29 +42,29 @@ const GROUPS: NavGroup[] = [
   {
     entries: [
       { to: '/', label: 'Početna', icon: Home, kbd: 'G H' },
-      { to: '/skladista', label: 'Skladišta', icon: Warehouse },
-      { to: '/artikli', label: 'Artikli', icon: Package },
-      { to: '/dobavljaci', label: 'Dobavljači', icon: Building2 },
-      { to: '/primke', label: 'Nabave', icon: Truck },
+      { to: '/warehouses', label: 'Skladišta', icon: Warehouse },
+      { to: '/articles', label: 'Artikli', icon: Package },
+      { to: '/suppliers', label: 'Dobavljači', icon: Building2 },
+      { to: '/procurements', label: 'Nabave', icon: Truck },
     ],
   },
   {
     label: 'Operacije',
     entries: [
-      { to: '/premjestaj', label: 'Premještaj robe', icon: ArrowLeftRight },
-      { to: '/korekcija', label: 'Korekcija zaliha', icon: Edit3 },
-      { to: '/smjena', label: 'Obračun smjene', icon: Calendar },
+      { to: '/transfers', label: 'Premještaj robe', icon: ArrowLeftRight },
+      { to: '/corrections', label: 'Korekcija zaliha', icon: Edit3 },
+      { to: '/shifts', label: 'Obračun smjene', icon: Calendar },
     ],
   },
   {
     label: 'Uvidi',
-    entries: [{ to: '/analitika', label: 'Analitika prodaje', icon: BarChart3 }],
+    entries: [{ to: '/analytics', label: 'Analitika prodaje', icon: BarChart3 }],
   },
   {
     label: 'Tim',
     entries: [
-      { to: '/korisnici', label: 'Korisnici', icon: Users },
-      { to: '/postavke', label: 'Postavke', icon: Settings },
+      { to: '/users', label: 'Korisnici', icon: Users },
+      { to: '/settings', label: 'Postavke', icon: Settings },
     ],
   },
 ];

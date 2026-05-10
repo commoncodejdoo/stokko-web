@@ -25,7 +25,7 @@ export function ShiftsListScreen() {
           <Button
             variant="primary"
             icon={<Plus size={14} />}
-            onClick={() => navigate('/smjena/zatvori')}
+            onClick={() => navigate('/shifts/close')}
           >
             Zatvori smjenu
           </Button>
@@ -49,7 +49,7 @@ export function ShiftsListScreen() {
               <Button
                 variant="primary"
                 icon={<Plus size={14} />}
-                onClick={() => navigate('/smjena/zatvori')}
+                onClick={() => navigate('/shifts/close')}
               >
                 Zatvori smjenu
               </Button>
@@ -114,7 +114,7 @@ export function ShiftsListScreen() {
             ]}
             rows={shifts.data.items}
             rowKey={(s) => s.id}
-            onRowClick={(s) => navigate(`/smjena/${s.id}`)}
+            onRowClick={(s) => navigate(`/shifts/${s.id}`)}
           />
         )}
       </div>

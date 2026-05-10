@@ -146,7 +146,7 @@ export function UserDetailScreen() {
         }
         breadcrumb={
           <>
-            <Link to="/korisnici" className="hover:text-text">
+            <Link to="/users" className="hover:text-text">
               Korisnici
             </Link>{' '}
             / {user.fullName}

@@ -71,7 +71,7 @@ export function WarehouseDetailScreen() {
   const handleDelete = async () => {
     try {
       await deleteWarehouse.mutateAsync(w.id);
-      navigate('/skladista', { replace: true });
+      navigate('/warehouses', { replace: true });
     } catch {
       // error shown in modal
     }
@@ -84,7 +84,7 @@ export function WarehouseDetailScreen() {
         sub={summary ? `${summary.articleCount} artikala` : undefined}
         breadcrumb={
           <>
-            <Link to="/skladista" className="hover:text-text">
+            <Link to="/warehouses" className="hover:text-text">
               Skladišta
             </Link>{' '}
             / {w.name}
@@ -170,7 +170,7 @@ export function WarehouseDetailScreen() {
               ]}
               rows={articles.data?.items ?? []}
               rowKey={(a) => a.articleId}
-              onRowClick={(a) => navigate(`/artikli/${a.articleId}`)}
+              onRowClick={(a) => navigate(`/articles/${a.articleId}`)}
               emptyMessage="Skladište ne sadrži artikle."
             />
           )}

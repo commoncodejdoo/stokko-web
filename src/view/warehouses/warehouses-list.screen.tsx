@@ -81,7 +81,7 @@ export function WarehousesListScreen() {
                 key={w.id}
                 padding="lg"
                 className="cursor-pointer hover:bg-card-hi transition-colors"
-                onClick={() => navigate(`/skladista/${w.id}`)}
+                onClick={() => navigate(`/warehouses/${w.id}`)}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">

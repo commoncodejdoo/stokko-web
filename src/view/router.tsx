@@ -46,8 +46,10 @@ const ProcurementDetailScreen = lazy(() =>
     default: m.ProcurementDetailScreen,
   })),
 );
-const NovaPrimkaScreen = lazy(() =>
-  import('./procurements/nova-primka.screen').then((m) => ({ default: m.NovaPrimkaScreen })),
+const NewProcurementScreen = lazy(() =>
+  import('./procurements/new-procurement.screen').then((m) => ({
+    default: m.NewProcurementScreen,
+  })),
 );
 const CorrectionScreen = lazy(() =>
   import('./corrections/correction.screen').then((m) => ({ default: m.CorrectionScreen })),
@@ -62,8 +64,8 @@ const TransferDetailScreen = lazy(() =>
     default: m.TransferDetailScreen,
   })),
 );
-const PremjestajScreen = lazy(() =>
-  import('./transfers/premjestaj.screen').then((m) => ({ default: m.PremjestajScreen })),
+const TransferScreen = lazy(() =>
+  import('./transfers/transfer.screen').then((m) => ({ default: m.TransferScreen })),
 );
 const ShiftsListScreen = lazy(() =>
   import('./sales/shifts-list.screen').then((m) => ({ default: m.ShiftsListScreen })),
@@ -111,26 +113,26 @@ export const router = createBrowserRouter([
         element: <AppShell />,
         children: [
           { path: '/', element: wrap(<DashboardScreen />) },
-          { path: '/skladista', element: wrap(<WarehousesListScreen />) },
-          { path: '/skladista/:id', element: wrap(<WarehouseDetailScreen />) },
-          { path: '/artikli', element: wrap(<ArticlesListScreen />) },
-          { path: '/artikli/:id', element: wrap(<ArticleDetailScreen />) },
-          { path: '/dobavljaci', element: wrap(<SuppliersListScreen />) },
-          { path: '/dobavljaci/:id', element: wrap(<SupplierDetailScreen />) },
-          { path: '/primke', element: wrap(<ProcurementsListScreen />) },
-          { path: '/primke/nova', element: wrap(<NovaPrimkaScreen />) },
-          { path: '/primke/:id', element: wrap(<ProcurementDetailScreen />) },
-          { path: '/premjestaj', element: wrap(<TransfersListScreen />) },
-          { path: '/premjestaj/novi', element: wrap(<PremjestajScreen />) },
-          { path: '/premjestaj/:id', element: wrap(<TransferDetailScreen />) },
-          { path: '/korekcija', element: wrap(<CorrectionScreen />) },
-          { path: '/smjena', element: wrap(<ShiftsListScreen />) },
-          { path: '/smjena/zatvori', element: wrap(<ShiftCloseScreen />) },
-          { path: '/smjena/:id', element: wrap(<ShiftDetailScreen />) },
-          { path: '/analitika', element: wrap(<AnalyticsScreen />) },
-          { path: '/korisnici', element: wrap(<UsersListScreen />) },
-          { path: '/korisnici/:id', element: wrap(<UserDetailScreen />) },
-          { path: '/postavke', element: wrap(<SettingsScreen />) },
+          { path: '/warehouses', element: wrap(<WarehousesListScreen />) },
+          { path: '/warehouses/:id', element: wrap(<WarehouseDetailScreen />) },
+          { path: '/articles', element: wrap(<ArticlesListScreen />) },
+          { path: '/articles/:id', element: wrap(<ArticleDetailScreen />) },
+          { path: '/suppliers', element: wrap(<SuppliersListScreen />) },
+          { path: '/suppliers/:id', element: wrap(<SupplierDetailScreen />) },
+          { path: '/procurements', element: wrap(<ProcurementsListScreen />) },
+          { path: '/procurements/new', element: wrap(<NewProcurementScreen />) },
+          { path: '/procurements/:id', element: wrap(<ProcurementDetailScreen />) },
+          { path: '/transfers', element: wrap(<TransfersListScreen />) },
+          { path: '/transfers/new', element: wrap(<TransferScreen />) },
+          { path: '/transfers/:id', element: wrap(<TransferDetailScreen />) },
+          { path: '/corrections', element: wrap(<CorrectionScreen />) },
+          { path: '/shifts', element: wrap(<ShiftsListScreen />) },
+          { path: '/shifts/close', element: wrap(<ShiftCloseScreen />) },
+          { path: '/shifts/:id', element: wrap(<ShiftDetailScreen />) },
+          { path: '/analytics', element: wrap(<AnalyticsScreen />) },
+          { path: '/users', element: wrap(<UsersListScreen />) },
+          { path: '/users/:id', element: wrap(<UserDetailScreen />) },
+          { path: '/settings', element: wrap(<SettingsScreen />) },
         ],
       },
     ],

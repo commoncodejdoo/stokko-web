@@ -211,7 +211,7 @@ export function UsersListScreen() {
             ]}
             rows={users.data}
             rowKey={(u) => u.id}
-            onRowClick={(u) => navigate(`/korisnici/${u.id}`)}
+            onRowClick={(u) => navigate(`/users/${u.id}`)}
           />
         )}
       </div>

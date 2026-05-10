@@ -68,7 +68,7 @@ export function ArticleDetailScreen() {
   const handleDelete = async () => {
     try {
       await deleteArticle.mutateAsync(a.id);
-      navigate('/artikli', { replace: true });
+      navigate('/articles', { replace: true });
     } catch {
       // error shown in modal
     }
@@ -89,7 +89,7 @@ export function ArticleDetailScreen() {
         }
         breadcrumb={
           <>
-            <Link to="/artikli" className="hover:text-text">
+            <Link to="/articles" className="hover:text-text">
               Artikli
             </Link>{' '}
             / {a.sku}

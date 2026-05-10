@@ -70,7 +70,7 @@ export function ProcurementDetailScreen() {
         }
         breadcrumb={
           <>
-            <Link to="/primke" className="hover:text-text">
+            <Link to="/procurements" className="hover:text-text">
               Nabave
             </Link>{' '}
             / {p.id.slice(0, 8).toUpperCase()}

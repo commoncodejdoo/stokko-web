@@ -78,7 +78,7 @@ export function TransferDetailScreen() {
         }
         breadcrumb={
           <>
-            <Link to="/premjestaj" className="hover:text-text">
+            <Link to="/transfers" className="hover:text-text">
               Premještaji
             </Link>{' '}
             / {t.id.slice(0, 8).toUpperCase()}
@@ -125,7 +125,7 @@ export function TransferDetailScreen() {
             ]}
             rows={t.items}
             rowKey={(i) => i.id}
-            onRowClick={(i) => navigate(`/artikli/${i.articleId}`)}
+            onRowClick={(i) => navigate(`/articles/${i.articleId}`)}
           />
         </div>
 

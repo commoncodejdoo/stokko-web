@@ -24,12 +24,13 @@ interface DraftItem {
   quantity: string;
 }
 
+// UI labels remain in Croatian per project rules (see CLAUDE.md "Working agreements").
 const STEPS = ['Skladišta', 'Artikli', 'Potvrda'];
 
 const normalizeDecimal = (s: string) => s.replace(',', '.').trim();
 const isPositive = (s: string) => /^\d+(\.\d+)?$/.test(normalizeDecimal(s)) && Number(s) > 0;
 
-export function PremjestajScreen() {
+export function TransferScreen() {
   const navigate = useNavigate();
   const warehouses = useWarehouses();
   const articlesAll = useArticles();
@@ -59,7 +60,7 @@ export function PremjestajScreen() {
   }, [sourceArticles.data]);
 
   const articleItems: PickerItem[] = useMemo(() => {
-    // Only items present in source warehouse with qty > 0
+    // Only items present in the source warehouse with qty > 0 are eligible for transfer.
     return (
       sourceArticles.data?.items
         .filter((a) => Number(a.quantity) > 0)
@@ -118,7 +119,7 @@ export function PremjestajScreen() {
           quantity: normalizeDecimal(i.quantity),
         })),
       });
-      navigate(`/premjestaj/${result.id}`, { replace: true });
+      navigate(`/transfers/${result.id}`, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Greška pri spremanju premještaja.');
     }
@@ -429,7 +430,8 @@ export function PremjestajScreen() {
         selectedId={sourceId}
         onSelect={(item) => {
           setSourceId(item.id);
-          setItems([]); // reset items because available stock changes
+          // Reset items because available stock depends on the source warehouse.
+          setItems([]);
         }}
         searchPlaceholder="Pretraži skladišta…"
       />
