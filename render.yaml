@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: stokko-web
+    env: static
+    region: frankfurt
+    buildCommand: pnpm install && pnpm build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+      - key: VITE_POSTHOG_KEY
+        sync: false
+      - key: VITE_POSTHOG_HOST
+        value: https://eu.i.posthog.com
+      - key: VITE_SENTRY_DSN
+        sync: false
