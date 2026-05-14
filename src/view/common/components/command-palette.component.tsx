@@ -14,11 +14,17 @@ import {
   Home,
   Users as UsersIcon,
   Settings as SettingsIcon,
+  Upload,
+  Download,
 } from 'lucide-react';
 import { useArticles } from '@/view/articles/articles.hook';
 import { useWarehouses } from '@/view/warehouses/warehouses.hook';
 import { useSuppliers } from '@/view/suppliers/suppliers.hook';
 import { useProcurements } from '@/view/procurements/procurements.hook';
+import { useAuthStore } from '@/view/common/store/auth-store';
+import { canEditCatalog } from '@/domain/common/role';
+import { useBulkImportDialog } from '@/view/bulk-import/bulk-import-store';
+import { useDownloadTemplate } from '@/view/bulk-import/bulk-import.hook';
 import { cn } from '@/view/common/utils/cn';
 
 interface CommandPaletteState {
@@ -54,6 +60,11 @@ export function CommandPalette() {
   const navigate = useNavigate();
   const open = useCommandPalette((s) => s.open);
   const setOpen = useCommandPalette((s) => s.setOpen);
+
+  const role = useAuthStore((s) => s.user?.role);
+  const canImport = role ? canEditCatalog(role) : false;
+  const openImport = useBulkImportDialog((s) => s.setOpen);
+  const downloadTemplate = useDownloadTemplate();
 
   const articles = useArticles();
   const warehouses = useWarehouses();
@@ -111,6 +122,30 @@ export function CommandPalette() {
                 >
                   Korekcija zaliha
                 </CmdItem>
+                {canImport && (
+                  <>
+                    <CmdItem
+                      value="uvezi excel xlsx artikli kategorije skladista dobavljaci import"
+                      icon={<Upload size={14} />}
+                      onSelect={() => {
+                        setOpen(false);
+                        openImport(true);
+                      }}
+                    >
+                      Uvezi Excel
+                    </CmdItem>
+                    <CmdItem
+                      value="preuzmi excel predlozak template download"
+                      icon={<Download size={14} />}
+                      onSelect={() => {
+                        setOpen(false);
+                        downloadTemplate.mutate();
+                      }}
+                    >
+                      Preuzmi Excel predložak
+                    </CmdItem>
+                  </>
+                )}
               </CmdGroup>
 
               <CmdGroup heading="Navigacija">

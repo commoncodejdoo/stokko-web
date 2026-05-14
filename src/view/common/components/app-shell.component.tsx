@@ -6,6 +6,7 @@ import {
   CommandPalette,
   useCommandPaletteShortcut,
 } from './command-palette.component';
+import { BulkImportDialog } from '@/view/bulk-import/bulk-import-dialog.component';
 
 export function AppShell() {
   useCommandPaletteShortcut();
@@ -20,6 +21,7 @@ export function AppShell() {
         </div>
       </main>
       <CommandPalette />
+      <BulkImportDialog />
     </div>
   );
 }
