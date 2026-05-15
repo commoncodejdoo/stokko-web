@@ -15,6 +15,7 @@ import {
   ArrowLeftRight,
   Calendar,
   BarChart3,
+  Sparkles,
 } from 'lucide-react';
 import { useAuthStore } from '@/view/common/store/auth-store';
 import { analytics } from '@/view/common/analytics';
@@ -58,7 +59,10 @@ const GROUPS: NavGroup[] = [
   },
   {
     label: 'Uvidi',
-    entries: [{ to: '/analytics', label: 'Analitika prodaje', icon: BarChart3 }],
+    entries: [
+      { to: '/recommendations', label: 'Preporuke nabave', icon: Sparkles },
+      { to: '/analytics', label: 'Analitika prodaje', icon: BarChart3 },
+    ],
   },
   {
     label: 'Tim',

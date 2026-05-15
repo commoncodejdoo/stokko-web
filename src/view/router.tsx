@@ -79,6 +79,21 @@ const ShiftCloseScreen = lazy(() =>
 const AnalyticsScreen = lazy(() =>
   import('./analytics/analytics.screen').then((m) => ({ default: m.AnalyticsScreen })),
 );
+const RecommendationsScreen = lazy(() =>
+  import('./predictions/recommendations.screen').then((m) => ({
+    default: m.RecommendationsScreen,
+  })),
+);
+const RecommendationDetailScreen = lazy(() =>
+  import('./predictions/recommendation-detail.screen').then((m) => ({
+    default: m.RecommendationDetailScreen,
+  })),
+);
+const ShoppingModeScreen = lazy(() =>
+  import('./predictions/shopping-mode.screen').then((m) => ({
+    default: m.ShoppingModeScreen,
+  })),
+);
 const UsersListScreen = lazy(() =>
   import('./users/users-list.screen').then((m) => ({ default: m.UsersListScreen })),
 );
@@ -130,6 +145,12 @@ export const router = createBrowserRouter([
           { path: '/shifts/close', element: wrap(<ShiftCloseScreen />) },
           { path: '/shifts/:id', element: wrap(<ShiftDetailScreen />) },
           { path: '/analytics', element: wrap(<AnalyticsScreen />) },
+          { path: '/recommendations', element: wrap(<RecommendationsScreen />) },
+          {
+            path: '/recommendations/:articleId/:warehouseId',
+            element: wrap(<RecommendationDetailScreen />),
+          },
+          { path: '/shopping-mode/:id', element: wrap(<ShoppingModeScreen />) },
           { path: '/users', element: wrap(<UsersListScreen />) },
           { path: '/users/:id', element: wrap(<UserDetailScreen />) },
           { path: '/settings', element: wrap(<SettingsScreen />) },

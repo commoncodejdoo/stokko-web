@@ -16,6 +16,8 @@ import {
   Settings as SettingsIcon,
   Upload,
   Download,
+  Sparkles,
+  ShoppingCart,
 } from 'lucide-react';
 import { useArticles } from '@/view/articles/articles.hook';
 import { useWarehouses } from '@/view/warehouses/warehouses.hook';
@@ -121,6 +123,20 @@ export function CommandPalette() {
                   onSelect={() => go('/corrections')}
                 >
                   Korekcija zaliha
+                </CmdItem>
+                <CmdItem
+                  value="preporuke nabave recommendations ai sloj"
+                  icon={<Sparkles size={14} />}
+                  onSelect={() => go('/recommendations')}
+                >
+                  Otvori preporuke
+                </CmdItem>
+                <CmdItem
+                  value="pokreni kupovinu shopping cart lista"
+                  icon={<ShoppingCart size={14} />}
+                  onSelect={() => go('/recommendations')}
+                >
+                  Pokreni kupovinu
                 </CmdItem>
                 {canImport && (
                   <>

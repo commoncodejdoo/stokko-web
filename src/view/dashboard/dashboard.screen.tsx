@@ -16,6 +16,8 @@ import {
   DashboardActivityEntry,
   DashboardWarehouseStat,
 } from '@/domain/dashboard/dashboard.domain';
+import { RecommendationsBanner } from '@/view/predictions/components/recommendations-banner.component';
+import { useRecommendations } from '@/view/predictions/recommendations.hook';
 import { formatActivity, formatRelativeTime } from './activity-format';
 import { useDashboardOverview } from './dashboard.hook';
 
@@ -23,6 +25,8 @@ export function DashboardScreen() {
   const navigate = useNavigate();
   const organization = useAuthStore((s) => s.organization);
   const overview = useDashboardOverview();
+  const recommendations = useRecommendations();
+  const summary = recommendations.data?.summary;
   const currency = organization?.currency ?? 'EUR';
 
   return (
@@ -48,6 +52,13 @@ export function DashboardScreen() {
       />
 
       <div className="px-8 py-6 flex flex-col gap-6">
+        {summary && (
+          <RecommendationsBanner
+            criticalCount={summary.criticalCount}
+            warningCount={summary.warningCount}
+            shouldReorderCount={summary.shouldReorderCount}
+          />
+        )}
         {overview.isPending ? (
           <div className="flex items-center justify-center py-20">
             <Spinner />
