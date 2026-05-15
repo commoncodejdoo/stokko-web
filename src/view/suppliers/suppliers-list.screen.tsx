@@ -10,6 +10,7 @@ import { Table } from '@/view/common/components/table.component';
 import { Modal } from '@/view/common/components/modal.component';
 import { useAuthStore } from '@/view/common/store/auth-store';
 import { canEditCatalog, canManageUsers } from '@/domain/common/role';
+import { BulkImportActions } from '@/view/bulk-import/bulk-import-actions.component';
 import { Supplier } from '@/domain/suppliers';
 import { useSuppliers, useDeleteSupplier } from './suppliers.hook';
 import { SupplierFormModal } from './supplier-form.modal';
@@ -42,15 +43,19 @@ export function SuppliersListScreen() {
         sub={suppliers.data ? `${suppliers.data.length} dobavljača` : undefined}
         breadcrumb="Dobavljači"
         actions={
-          canEdit && (
-            <Button
-              variant="primary"
-              icon={<Plus size={14} />}
-              onClick={() => setCreateOpen(true)}
-            >
-              Novi dobavljač
-            </Button>
-          )
+          <BulkImportActions
+            trailing={
+              canEdit && (
+                <Button
+                  variant="primary"
+                  icon={<Plus size={14} />}
+                  onClick={() => setCreateOpen(true)}
+                >
+                  Novi dobavljač
+                </Button>
+              )
+            }
+          />
         }
       />
 

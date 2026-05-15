@@ -9,6 +9,7 @@ import { EmptyState } from '@/view/common/components/empty-state.component';
 import { Pill } from '@/view/common/components/pill.component';
 import { useAuthStore } from '@/view/common/store/auth-store';
 import { canEditCatalog } from '@/domain/common/role';
+import { BulkImportActions } from '@/view/bulk-import/bulk-import-actions.component';
 import { WAREHOUSE_KIND_LABELS_HR } from '@/domain/warehouses';
 import { Sparkline } from '@/view/common/components/sparkline.component';
 import { sparklineStub } from '@/view/common/utils/sparkline-stub';
@@ -36,15 +37,19 @@ export function WarehousesListScreen() {
         }
         breadcrumb={'Skladišta'}
         actions={
-          canCreate && (
-            <Button
-              variant="primary"
-              icon={<Plus size={14} />}
-              onClick={() => setCreateOpen(true)}
-            >
-              Novo skladište
-            </Button>
-          )
+          <BulkImportActions
+            trailing={
+              canCreate && (
+                <Button
+                  variant="primary"
+                  icon={<Plus size={14} />}
+                  onClick={() => setCreateOpen(true)}
+                >
+                  Novo skladište
+                </Button>
+              )
+            }
+          />
         }
       />
 

@@ -1,10 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, Package, Upload, Download } from 'lucide-react';
+import { Plus, Search, Package } from 'lucide-react';
 import { PageHeader } from '@/view/common/components/page-header.component';
 import { Button } from '@/view/common/components/button.component';
-import { useBulkImportDialog } from '@/view/bulk-import/bulk-import-store';
-import { useDownloadTemplate } from '@/view/bulk-import/bulk-import.hook';
+import { BulkImportActions } from '@/view/bulk-import/bulk-import-actions.component';
 import { Card } from '@/view/common/components/card.component';
 import { Spinner } from '@/view/common/components/spinner.component';
 import { EmptyState } from '@/view/common/components/empty-state.component';
@@ -32,8 +31,6 @@ export function ArticlesListScreen() {
   const articles = useArticles({ q: q || undefined, categoryId: categoryId || undefined });
   const categories = useCategories();
   const warehouses = useWarehouses();
-  const openImport = useBulkImportDialog((s) => s.setOpen);
-  const downloadTemplate = useDownloadTemplate();
 
   const warehousesById = useMemo(() => {
     const map = new Map<string, { name: string; color: string }>();
@@ -48,27 +45,19 @@ export function ArticlesListScreen() {
         sub={articles.data ? `${articles.data.length} artikala` : undefined}
         breadcrumb="Artikli"
         actions={
-          canCreate && (
-            <div className="flex items-center gap-2">
-              <Button
-                icon={<Download size={14} />}
-                onClick={() => downloadTemplate.mutate()}
-                loading={downloadTemplate.isPending}
-              >
-                Predložak
-              </Button>
-              <Button icon={<Upload size={14} />} onClick={() => openImport(true)}>
-                Uvezi Excel
-              </Button>
-              <Button
-                variant="primary"
-                icon={<Plus size={14} />}
-                onClick={() => setCreateOpen(true)}
-              >
-                Novi artikl
-              </Button>
-            </div>
-          )
+          <BulkImportActions
+            trailing={
+              canCreate && (
+                <Button
+                  variant="primary"
+                  icon={<Plus size={14} />}
+                  onClick={() => setCreateOpen(true)}
+                >
+                  Novi artikl
+                </Button>
+              )
+            }
+          />
         }
       />
 
